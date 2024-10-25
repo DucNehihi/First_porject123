@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="vi">
+  <head>
+    <!-- Basic -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <!-- Site Metas -->
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <title>TripBiz - Nháp Bài Viết</title>
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+        <!-- jQuery (phải được thêm trước Bootstrap JS) -->
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    
+        <!-- Bootstrap JS -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+        <!-- bootstrap core css -->
+        <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
+        <!-- Custom styles for this template -->
+        <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+
+    <style>
+      /* Đặt nền cho phần nháp bài viết */
+      .trip_section {
+        background-color: #f8f9fa; /* Màu nền sáng */
+        padding: 40px 0; /* Thêm khoảng cách trên và dưới */
+      }
+      
+      /* Đặt chiều rộng cho phần container */
+      .container {
+        max-width: 800px; /* Chiều rộng tối đa */
+        margin: auto; /* Căn giữa */
+      }
+      
+      /* Định dạng tiêu đề */
+      .heading_container h2 {
+        font-size: 28px; /* Kích thước chữ lớn */
+        color: #333; /* Màu chữ */
+        text-align: center; /* Căn giữa */
+        margin-bottom: 30px; /* Khoảng cách dưới */
+      }
+      
+      /* Định dạng nội dung bài viết */
+      .post {
+        background-color: #ffffff; /* Nền trắng */
+        border-radius: 8px; /* Bo góc */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+        padding: 20px; /* Khoảng cách bên trong */
+        margin-bottom: 20px; /* Khoảng cách dưới mỗi bài viết */
+      }
+      
+      /* Định dạng tiêu đề bài viết nháp */
+      .post h3 {
+        font-size: 24px; /* Kích thước chữ vừa */
+        color: #007bff; /* Màu chữ xanh */
+        margin-bottom: 15px; /* Khoảng cách dưới */
+      }
+      
+      /* Định dạng đoạn văn */
+      .post p {
+        font-size: 16px; /* Kích thước chữ nhỏ */
+        line-height: 1.6; /* Khoảng cách giữa các dòng */
+        color: #666; /* Màu chữ xám */
+      }
+      
+      /* Định dạng hình ảnh */
+      .post img {
+        max-width: 100%; /* Đảm bảo hình ảnh không vượt quá chiều rộng của phần tử */
+        height: auto; /* Giữ tỷ lệ hình ảnh */
+        border-radius: 4px; /* Bo góc nhẹ cho hình ảnh */
+        margin-top: 15px; /* Khoảng cách trên */
+      }
+      
+      /* Định dạng nút */
+      .btn1 {
+        margin-top: 15px; /* Khoảng cách trên */
+        width: 100%; /* Chiều rộng nút bằng 100% */
+        padding: 10px; /* Khoảng cách bên trong */
+        font-size: 16px; /* Kích thước chữ */
+      }
+      
+      /* Định dạng nút phê duyệt */
+      .btn-pheduyet {
+        background-color: #28a745; /* Màu xanh lá */
+        color: white; /* Màu chữ trắng */
+      }
+      
+      /* Định dạng nút xóa */
+      .btn-xoa {
+        background-color: #dc3545; /* Màu đỏ */
+        color: white; /* Màu chữ trắng */
+      }
+      .btn-sua {
+        background-color: #17a2b8; /* Màu xanh biển */
+        color: white; /* Màu chữ trắng */
+      }
+    </style>
+  </head>
+
+  <body>
+      <nav class="navbar navbar-expand-lg custom_nav-container bg-secondary fixed-top container-fluid pt-3">
+        <a class="navbar-brand" href="#"><span>TripBiz</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <div class="d-flex ml-auto flex-column flex-lg-row align-items-center">
+            <ul class="navbar-nav">
+              <li class="nav-item active">
+                <a class="nav-link" href="{% url 'home' %}">
+                  Home
+                  <span class="sr-only">(current)</span>
+                </a>
+              </li>
+              <li class="nav-item active">
+                <a class="nav-link" href="{% url 'list_post' %}">
+                  ALL Blog
+                  <span class="sr-only">(current)</span>
+                </a>
+              </li>
+              <!-- Kiểm tra nếu người dùng đã đăng nhập -->
+              {% if user.is_authenticated %}
+                <!-- Hiển thị "Blog" nếu người dùng đã đăng nhập -->
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'write_post' %}">Blog</a>
+                </li>
+                <!-- Nếu người dùng là admin (is_staff), hiển thị thêm "Draft" -->
+                {% if user.is_staff %}
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'draft' %}">Draft</a>
+                  </li>
+                {% endif %}
+              {% endif %}
+            <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'draft' %}">
+              <input class="form-control mr-sm-2" type="search" placeholder="Search by title" aria-label="Search"
+                  name="q" value="{{ request.GET.q }}">
+                  <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            </ul>
+          </div>
+          <div class="quote_btn-container ml-0 ml-lg-4 d-flex justify-content-center">
+            {% if user.is_authenticated %}
+              <!-- Hiển thị thông báo chào mừng với phân biệt admin -->
+              {% if user.is_staff %}
+                <span class="nav-link">Chào mừng Admin, {{ user.username }}!</span>
+              {% else %}
+                <span class="nav-link">Chào mừng, {{ user.username }}!</span>
+              {% endif %}
+              <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Đăng xuất</button>
+              </form>
+            {% else %}
+              <!-- Khi người dùng chưa đăng nhập, hiển thị nút Đăng nhập -->
+              <a href="{% url 'login' %}" class="btn btn-primary">Đăng nhập</a>
+            {% endif %}
+          </div>
+        </div>
+      </nav>
+
+      <section class="trip_section layout_padding" id="draftPost">
+        <div class="container">
+          <div class="heading_container">
+            <h2>Nháp Bài Viết</h2>
+          </div>
+          {% for post in posts %}
+            <!-- Lặp qua danh sách bài viết -->
+            <div class="post">
+              <h2>{{ post.title }}</h2>
+              <!-- Hiển thị tiêu đề -->
+              <!-- update -->
+              <p>{{ post.continent }}</p>
+              <!-- update -->
+              <div class="post-content">
+                {{ post.content|safe }}
+              </div>
+              
+              <!-- Hiển thị nội dung -->
+              {% if post.image %}
+                <img src="{{ post.image.url }}" alt="Post Image" class="img-fluid" />
+                <!-- Hiển thị ảnh nếu có -->
+              {% endif %}
+
+              <!-- Nút phê duyệt và xóa bài viết -->
+              <form action="{% url 'approve_post' %}" method="POST" class="d-inline">
+                {% csrf_token %}
+                <input type="hidden" name="post_id" value="{{ post.id }}" />
+                <button type="submit" class="btn1 btn-pheduyet">Phê Duyệt</button>
+              </form>
+
+              <form action="{% url 'delete_draft' %}" method="POST" class="d-inline">
+                {% csrf_token %}
+                <input type="hidden" name="post_id" value="{{ post.id }}" />
+                <button type="submit" class="btn1 btn-xoa">Xóa Bài</button>
+              </form>
+
+              <!-- Thêm nút Edit để chỉnh sửa bài viết -->
+              <!-- Thêm nút Edit để chỉnh sửa bài viết -->
+<form method="POST" action="{% url 'edit_draft' post.id %}">
+  {% csrf_token %}
+  <input type="hidden" name="redirect_to" value="draft_post">
+  <button type="submit" class="btn1 btn-sua" title="Chỉnh sửa bài viết này">Chỉnh Sửa</button>
+</form>
+
+
+              <!-- Phần bình luận -->
+              <div class="comments">
+                <h4>Bình luận:</h4>
+                {% for comment in post.comments.all %}
+                  <div class="comment">
+                    <strong>{{ comment.user.username }}</strong>: {{ comment.content }} <br />
+                    <small>{{ comment.created_at }}</small>
+                    
+                  </div>
+                {% empty %}
+                  <p>Chưa có bình luận nào.</p>
+                {% endfor %}
+              </div>
+
+              <!-- Form để thêm bình luận -->
+              <form action="{% url 'add_draft_comment' post.id %}" method="POST">
+                <!-- Cập nhật URL -->
+                {% csrf_token %}
+                <textarea name="content" rows="3" required></textarea>
+                <button type="submit" class="btn1 btn-sua">Thêm Bình Luận</button>
+              </form>
+            </div>
+          {% endfor %}
+          <!-- Nút Add để thêm bài viết mới -->
+          <a href="{% url 'write_post' %}" class="btn1 btn-sua">Thêm Bài Viết Mới</a>
+        </div>
+      </section>
+      <!-- info section -->
+      <section class="info_section">
+        <div class="info_container">
+          <div class="container">
+            <div class="social_container">
+              <div class="info_social">
+                <div>
+                  <a href=""><img src="{% static 'images/facebook-logo-button.png' %}" alt="" /></a>
+                </div>
+                <div>
+                  <a href=""><img src="{% static 'images/twitter-logo-button.png' %}" alt="" /></a>
+                </div>
+                <div>
+                  <a href=""><img src="{% static 'images/linkedin.png' %}" alt="" /></a>
+                </div>
+                <div>
+                  <a href=""><img src="{% static 'images/instagram.png' %}" alt="" /></a>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-2"></div>
+              <div class="col-lg-4">
+                <h5>Subscribe Newsletter</h5>
+                <form action="">
+                  <input type="text" placeholder="Enter your email" />
+                  <div class="">
+                    <button>Subscribe</button>
+                  </div>
+                </form>
+              </div>
+              <div class="col-lg-4">
+                <h5>Address</h5>
+                <div class="info_link-box">
+                  <a href="">
+                    <img src="{% static 'images/location2.png' %}" alt="" />
+                    <span>Passages of Lorem Ipsum available</span>
+                  </a>
+                  <a href="">
+                    <img src="{% static 'images/call.png' %}" alt="" />
+                    <span>Call : +01234567890</span>
+                  </a>
+                  <a href="">
+                    <img src="{% static 'images/mail.png' %}" alt="" />
+                    <span>demo@gmail.com</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <!-- footer section -->
+            <section class="footer_section">
+              <p>
+                Copyright &copy; 2021 All Rights Reserved By
+                <a href="https://html.design/">Free Html Templates</a>
+              </p>
+              <p>
+                Distributed By
+                <a href="https://themewagon.com">Themewagon</a>
+              </p>
+            </section>
+            <!-- footer section -->
+          </div>
+        </div>
+      </section>
+    <!-- end info section -->
+  </body>
+</html>

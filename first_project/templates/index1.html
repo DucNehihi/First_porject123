@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>TripBiz</title>
+
+  <!-- range selctor slider style -->
+
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/css/ion.rangeSlider.min.css" />
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
+  <!-- fonts style -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet" />
+  <!-- Custom styles for this template -->
+  <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+  <!-- responsive style -->
+  <link href="{% static 'css/responsive.css' %}" rel="stylesheet" />
+
+  <style>
+    .post {
+      margin-bottom: 30px;
+    }
+  
+    .post h3 {
+      margin-bottom: 10px;
+    }
+  
+    .post-container {
+      display: flex; /* Chuyển về dạng flex để chia cột đều cho ảnh và nội dung */
+      align-items: flex-start;
+      margin-bottom: 15px; /* Khoảng cách giữa ảnh và nội dung */
+    }
+  
+    .post-image {
+      width: 35%; /* Giảm kích thước ảnh xuống 35% */
+      height: auto; /* Tự động điều chỉnh chiều cao */
+      border-radius: 8px;
+      margin-top: 10px;
+      object-fit: cover; /* Giữ tỉ lệ của ảnh và cắt phần thừa nếu cần */
+    }
+  
+    .post-content {
+      width: 65%; /* Đặt kích thước nội dung là 65% */
+      padding: 10px; /* Thêm khoảng cách bên trong cho nội dung */
+      word-break: break-word; /* Đảm bảo nội dung không vượt quá kích thước */
+      margin-left: 10px; /* Thêm khoảng cách giữa ảnh và nội dung */
+    }
+  
+    .post-text {
+      max-height: 100px;
+      overflow: hidden;
+      position: relative;
+      transition: max-height 0.3s ease;
+    }
+  
+    .post-text.expanded {
+      max-height: none;
+    }
+  
+    .show-more {
+      background: none;
+      border: none;
+      color: #007bff;
+      cursor: pointer;
+      padding: 0;
+      margin: 5px 0;
+      font-size: 16px;
+      text-align: left;
+    }
+  
+    .post-actions {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+  
+    .post-actions button,
+    .post-actions a {
+      margin-right: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+    }
+  
+    .like-btn {
+      background-color: #4caf50;
+      color: white;
+    }
+  
+    .dislike-btn {
+      background-color: #f44336;
+      color: white;
+    }
+  
+    .comment-btn {
+      background-color: #2196f3;
+      color: white;
+    }
+  
+    .edit-delete {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+    }
+    .post-box {
+      background-color: white; /* Nền trắng */
+      border-radius: 10px; /* Bo tròn góc của hộp */
+      padding: 50px; /* Khoảng cách giữa nội dung và viền */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Tạo đổ bóng nhẹ */
+      margin-bottom: 30px; /* Khoảng cách giữa các bài viết */
+    }
+  
+    @media (max-width: 768px) {
+      .post-container {
+        flex-direction: column;
+      }
+  
+      .post-image {
+        width: 100%; /* Để ảnh chiếm toàn bộ chiều rộng trên màn hình nhỏ */
+        height: auto;
+      }
+  
+      .post-content {
+        width: 100%; /* Để nội dung chiếm toàn bộ chiều rộng trên màn hình nhỏ */
+        margin-left: 0; /* Không có khoảng cách bên trái */
+      }
+    }
+  </style>
+</head>
+
+<body>
+  
+  <div class="hero_area">
+    <!-- header section strats -->
+    <nav class="navbar navbar-expand-lg custom_nav-container bg-secondary fixed-top pt-3">
+      <a class="navbar-brand" href="#"><span>TripBiz</span></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <div class="d-flex ml-auto flex-column flex-lg-row align-items-center">
+              <ul class="navbar-nav">
+                  <li class="nav-item active">
+                      <a class="nav-link" href="{% url 'home' %}">Home<span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="nav-item active">
+                      <a class="nav-link" href="{% url 'list_post' %}">ALL Blog<span class="sr-only">(current)</span></a>
+                  </li>
+                  <!-- Kiểm tra nếu người dùng đã đăng nhập -->
+                  {% if user.is_authenticated %}
+                      <li class="nav-item">
+                          <a class="nav-link" href="{% url 'write_post' %}">Blog</a>
+                      </li>
+                      {% if user.is_staff %}
+                          <li class="nav-item">
+                              <a class="nav-link" href="{% url 'draft' %}">Draft</a>
+                          </li>
+                      {% endif %}
+                  {% endif %}
+              </ul>
+          </div>
+          <div class="quote_btn-container ml-0 ml-lg-4 d-flex justify-content-center">
+              {% if user.is_authenticated %}
+                  <!-- Hiển thị thông báo chào mừng với phân biệt admin -->
+                  {% if user.is_staff %}
+                      <a class="nav-link" href="{% url 'user_management' %}">Chào mừng Admin, {{ user.username }}!</a>
+                  {% else %}
+                      <span class="nav-link">Chào mừng, {{ user.username }}!</span>
+                  {% endif %}
+                  <form method="POST" action="{% url 'logout' %}">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger">Đăng xuất</button>
+                  </form>
+              {% else %}
+                  <a href="{% url 'login' %}" class="btn btn-primary">Đăng nhập</a>
+              {% endif %}
+          </div>
+      </div>
+  </nav>
+  
+    
+    
+    <!-- end header section -->
+    <!-- slider section -->
+    <section class="slider_section">
+      <div class="container">
+        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <div class="slider_container">
+                <div class="box">
+                  <div class="detail-box">
+                    <h1>Traveler</h1>
+                    <h2>Life is a journey, be a traveler</h2>
+                  </div>
+                  <div class="img-box">
+                    <div class="play_btn">
+                      <a href=""><img src="{% static 'images/play.png' %}" alt="" /></a>
+                    </div>
+                  </div>
+                </div>
+                <div class="btn-box">
+                  <a href="">Discover More</a>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div class="slider_container">
+                <div class="box">
+                  <div class="detail-box">
+                    <h1>TripTravel</h1>
+                    <h2>Explore the world, one trip at a time</h2>
+                  </div>
+                  <div class="img-box">
+                    <div class="play_btn">
+                      <a href=""><img src="{% static 'images/play.png' %}" alt="" /></a>
+                    </div>
+                  </div>
+                </div>
+                <div class="btn-box">
+                  <a href="">Discover More</a>
+                </div>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div class="slider_container">
+                <div class="box">
+                  <div class="detail-box">
+                    <h1>Travel Destination</h1>
+                    <h2>Uncover hidden gems, one destination at a time</h2>
+                  </div>
+                  <div class="img-box">
+                    <div class="play_btn">
+                      <a href=""><img src="{% static 'images/play.png' %}" alt="" /></a>
+                    </div>
+                  </div>
+                </div>
+                <div class="btn-box">
+                  <a href="">Discover More</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="custom_carousel-control">
+          <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev"><span
+              class="sr-only">Previous</span></a>
+          <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next"><span
+              class="sr-only">Next</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- end slider section -->
+  </div>
+
+  <!-- trip section -->
+
+  <section class="trip_section layout_padding" id="bookTrip">
+    <div class="container">
+      <div class="heading_container">
+        <h2>Your Adventures, Your Stories</h2>
+        <p>Share your travel experiences and inspire others! Our blog is a space where travelers can connect,
+          exchange stories, and offer tips on the best destinations around the world.</p>
+      </div>
+    </div>
+
+    <!-- Main Blog Section -->
+    <div class="container">
+      <div class="container p-4">
+      </div>
+      <ul>
+        <div class="post-box">
+        {% for post in top_posts %}
+        <div class="post">
+          <h3>{{ post.title }}</h3>
+          <!-- update  -->
+          <p>{{ post.continent }}</p>
+          <!-- update  -->
+          <div class="post-container">
+            {% if post.image %}
+            <img src="{{ post.image.url }}" alt="Post Image" class="img-fluid post-image" />
+            {% endif %}
+
+            <div class="post-content">
+              <div class="post-text" id="post-text-{{ post.id }}">
+                <p>{{ post.content }}</p>
+              </div>
+              <a href="{% url 'detail_post' post.id %}">
+                <button class="show-more" data-target="post-text-{{ post.id }}">Read more</button>
+            </a>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+          <li>Không có bài viết nào.</li>
+        {% endfor %}
+      </ul>
+      </div>
+
+      <!-- See All Blogs Button -->
+      <div class="see-all-btn">
+        <a href="{% url 'list_post' %}">See All Blogs</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- blog section -->
+
+  <section class="blog_section" id="blog">
+    <div class="container">
+      <div class="heading_container">
+        <h2>Discover Your Next Destination</h2>
+        <p>Explore our curated list of must-visit destinations and get inspired for your next unforgettable journey!</p>
+      </div>
+      <!-- Carousel -->
+      <div id="carouselblogControls" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+          <!-- First set of blogs -->
+          <div class="carousel-item active">
+            <div class="container">
+              <div class="box container-bg">
+                <div class="blog_box">
+                  <div class="detail-box">
+                    <div class="img-box">
+                      <img src="{% static 'images/b-1.jpg' %}" alt="" />
+                    </div>
+                    <div class="text-box">
+                      <h5>Warsaw Day Tour</h5>
+                      <h6>Duration: 4 hours 20 mins</h6>
+                      <p>Explore Warsaw in a day! Visit historic landmarks while uncovering the rich culture and history
+                        of Poland’s capital.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="blog_box-cover">
+                  <div class="blog_box">
+                    <div class="detail-box">
+                      <div class="img-box">
+                        <img src="{% static 'images/b-2.jpg' %}" alt="" />
+                      </div>
+                      <div class="text-box">
+                        <h5>Islands Trip</h5>
+                        <h6>Duration: 4 hours 20 mins</h6>
+                        <p>Discover the beauty of islands with stunning beaches. Each island offers a perfect mix of
+                          relaxation and exploration.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="blog_box">
+                    <div class="detail-box">
+                      <div class="img-box">
+                        <img src="{% static 'images/b-4.jpg' %}" alt="" />
+                      </div>
+                      <div class="text-box">
+                        <h5>Santorini Islands Tour</h5>
+                        <h6>Duration: 4 hours 20 mins</h6>
+                        <p>Uncover the charm of Santorini with its iconic whitewashed buildings. This tour offers a
+                          perfect mix of culture.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="blog_box">
+                  <div class="detail-box">
+                    <div class="img-box">
+                      <img src="{% static 'images/b-3.jpg' %}" alt="" />
+                    </div>
+                    <div class="text-box">
+                      <h5>Warsaw Day Tour</h5>
+                      <h6>Duration: 4 hours 20 mins</h6>
+                      <p>Experience the best of a destination in just one day. Our Day Tours offer a perfect blend of
+                        sightseeing and memorable activities.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Second set of blogs (duplicated) -->
+          <div class="carousel-item">
+            <div class="container">
+              <div class="box container-bg">
+                <div class="blog_box">
+                  <div class="detail-box">
+                    <div class="img-box">
+                      <img src="{% static 'images/b-5.jpg' %}" alt="" />
+                    </div>
+                    <div class="text-box">
+                      <h5>Cappadocia, Turkey</h5>
+                      <h6>Duration: 4 hours 20 mins</h6>
+                      <p>Famous for its otherworldly landscapes, ancient cave dwellings, and breathtaking hot air
+                        balloon
+                        rides at sunrise.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="blog_box-cover">
+                  <div class="blog_box">
+                    <div class="detail-box">
+                      <div class="img-box">
+                        <img src="{% static 'images/b-6.jpg' %}" alt="" />
+                      </div>
+                      <div class="text-box">
+                        <h5>Santorini, Greece</h5>
+                        <h6>Duration: 4 hours 20 mins</h6>
+                        <p>A postcard-perfect island with whitewashed buildings, stunning sunsets, offering both beauty
+                          and history.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="blog_box">
+                    <div class="detail-box">
+                      <div class="img-box">
+                        <img src="{% static 'images/b-7.jpg' %}" alt="" />
+                      </div>
+                      <div class="text-box">
+                        <h5>Queenstown, New Zealand</h5>
+                        <h6>Duration: 4 hours 20 mins</h6>
+                        <p>The adventure capital of the world, where you can experience from bungee jumping to peaceful
+                          lakeside strolls.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="blog_box">
+                  <div class="detail-box">
+                    <div class="img-box">
+                      <img src="{% static 'images/b-8.jpg' %}" alt="" />
+                    </div>
+                    <div class="text-box">
+                      <h5>Venice, Italy</h5>
+                      <h6>Duration: 4 hours 20 mins</h6>
+                      <p>A city built on water, known for its romantic gondola rides, intricate canals, and timeless
+                        architecture.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- third set of blogs (duplicated) -->
+          <div class="carousel-item">
+            <div class="container">
+              <div class="box container-bg">
+                <div class="blog_box">
+                  <div class="detail-box">
+                    <div class="img-box">
+                      <img src="{% static 'images/b-9.jpg' %}" alt="" />
+                    </div>
+                    <div class="text-box">
+                      <h5>Bali, Indonesia</h5>
+                      <h6>Duration: 4 hours 20 mins</h6>
+                      <p>A tropical paradise known for its stunning beaches, and serene temples. Perfect for both
+                        relaxation and adventure.</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="blog_box-cover">
+                  <div class="blog_box">
+                    <div class="detail-box">
+                      <div class="img-box">
+                        <img src="{% static 'images/b-10.jpg' %}" alt="" />
+                      </div>
+                      <div class="text-box">
+                        <h5>Kyoto, Japan</h5>
+                        <h6>Duration: 4 hours 20 mins</h6>
+                        <p>Step back in time with traditional temples, beautiful gardens, and serene tea houses in the
+                          heart of Japan’s cultural hub.</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="blog_box">
+                    <div class="detail-box">
+                      <div class="img-box">
+                        <img src="{% static 'images/b-11.jpg' %}" alt="" />
+                      </div>
+                      <div class="text-box">
+                        <h5>Maui, Hawaii</h5>
+                        <h6>Duration: 4 hours 20 mins</h6>
+                        <p>Explore lush rainforests, warm sunlight, hike volcanic landscapes, and relax on world-famous
+                          beaches
+                          in this island gem.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="blog_box">
+                  <div class="detail-box">
+                    <div class="img-box">
+                      <img src="{% static 'images/b-12.jpg' %}" alt="" />
+                    </div>
+                    <div class="text-box">
+                      <h5>Paris, France</h5>
+                      <h6>Duration: 4 hours 20 mins</h6>
+                      <p>The City of Light, where art, history, and romance come alive with iconic landmarks like the
+                        Eiffel Tower and the Louvre.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carousel controls -->
+        <div class="custom_carousel-control">
+          <a class="carousel-control-prev" href="#carouselblogControls" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next" href="#carouselblogControls" role="button" data-slide="next">
+            <span class="carousel-control-next-icon"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- end blog section -->
+
+  <!-- client section -->
+  <section class="layout_padding"></section>
+
+  <!-- end client section -->
+
+  <!-- info section -->
+  <section class="info_section">
+    <div class="info_container">
+      <div class="container">
+        <div class="social_container">
+          <div class="info_social">
+            <div>
+              <a href=""><img src="{% static 'images/facebook-logo-button.png' %}" alt="" /></a>
+            </div>
+            <div>
+              <a href=""><img src="{% static 'images/twitter-logo-button.png' %}" alt="" /></a>
+            </div>
+            <div>
+              <a href=""><img src="{% static 'images/linkedin.png' %}" alt="" /></a>
+            </div>
+            <div>
+              <a href=""><img src="{% static 'images/instagram.png' %}" alt="" /></a>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-2">
+          </div>
+          <div class="col-lg-4">
+            <h5>Subscribe Newsletter</h5>
+            <form action="">
+              <input type="text" placeholder="Enter your email" />
+              <div class="">
+                <button>Subscribe</button>
+              </div>
+            </form>
+          </div>
+          <div class="col-lg-4">
+            <h5>Address</h5>
+            <div class="info_link-box">
+              <a href="">
+                <img src="{% static 'images/location2.png' %}" alt="" />
+                <span>Passages of Lorem Ipsum available</span>
+              </a>
+              <a href="">
+                <img src="{% static 'images/call.png' %}" alt="" />
+                <span>Call : +01234567890</span>
+              </a>
+              <a href="">
+                <img src="{% static 'images/mail.png' %}" alt="" />
+                <span>demo@gmail.com</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <!-- footer section -->
+        <section class="footer_section">
+          <p>
+            Copyright &copy; 2021 All Rights Reserved By
+            <a href="https://html.design/">Free Html Templates</a>
+          </p>
+          <p>
+            Distributed By
+            <a href="https://themewagon.com">Themewagon</a>
+          </p>
+        </section>
+        <!-- footer section -->
+      </div>
+    </div>
+  </section>
+  <!-- end info section -->
+
+  <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
+
+  <!-- range selector slider script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/js/ion.rangeSlider.min.js"></script>
+
+  <script>
+    $('.js-range-slider').ionRangeSlider({
+      skin: 'round',
+      type: 'double',
+      min: 200,
+      max: 10000,
+      from: 200,
+      to: 500,
+      grid: true
+    })
+  </script>
+</body>
+
+</html>

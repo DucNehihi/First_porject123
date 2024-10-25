@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <title>Page Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--===============================================================================================-->  
+    <link rel="icon" type="image/png" href="{% static 'images/icons/favicon.ico' %}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{% static 'fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{% static 'fonts/Linearicons-Free-v1.0.0/icon-font.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/animate/animate.css' %}">    
+    <!--===============================================================================================-->    
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/css-hamburgers/hamburgers.min.css' %}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/animsition/css/animsition.min.css' %}">    
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/select2/select2.min.css' %}">    
+    <!--===============================================================================================-->    
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/daterangepicker/daterangepicker.css' %}">    
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <!--===============================================================================================-->
+    
+    <style>
+        /* Hiệu ứng hover cho input */
+        input[type="text"], input[type="password"] {
+            width: 100%; /* Đặt chiều rộng thành 100% để ô input chiếm toàn bộ chiều rộng */
+            padding: 15px; /* Thêm padding cho ô input */
+            border: 2px solid #db1557; /* Màu viền mặc định */
+            border-radius: 5px; /* Bo góc cho ô input */
+            font-size: 20px; /* Kích thước chữ lớn hơn */
+            font-family: 'Roboto', sans-serif; /* Đặt font chữ Roboto để chữ trông hiện đại hơn */
+            color: #0e0c0c; /* Màu chữ */
+
+            transition: background-color 0.3s ease, border-color 0.3s ease; /* Thêm transition cho hiệu ứng mượt mà */
+        }
+
+        input[type="text"]:hover, input[type="password"]:hover {
+            background-color: #5388d8; /* Màu nền khi hover */
+            border-color: #0b9147; /* Màu viền khi hover */
+        }
+
+        /* Tùy chỉnh cho các ô input */
+        .login100-form .input-group {
+            margin-bottom: 15px; /* Thêm khoảng cách giữa các ô input */
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="limiter">
+        <div class="container-login100" style="background-image: url('{% static 'images/bg-01.jpg' %}');">
+            <div class="wrap-login100 p-t-30 p-b-50">
+                <span class="login100-form-title p-b-41">
+                    Account Login
+                </span>
+
+                <!-- Django login form starts here -->
+                <div class="login-container">
+                    <form method="POST" class="login100-form validate-form p-b-33 p-t-5">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="container-login100-form-btn m-t-32">
+                            <button type="submit" class="login100-form-btn">Login</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>Bạn chưa có tài khoản? <a href="{% url 'register' %}" class="text-primary">ĐĂNG KÝ NGAY</a></p>
+                    </div>
+                </div>
+                <!-- Django login form ends here -->
+
+            </div>
+        </div>
+    </div>
+
+    <div id="dropDownSelect1"></div>
+    
+    <!--===============================================================================================-->
+    <script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+    <!--===============================================================================================-->
+    <script src="{% static 'vendor/animsition/js/animsition.min.js' %}"></script>
+    <!--===============================================================================================-->
+    <script src="{% static 'vendor/bootstrap/js/popper.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+    <!--===============================================================================================-->
+    <script src="{% static 'vendor/select2/select2.min.js' %}"></script>
+    <!--===============================================================================================-->
+    <script src="{% static 'vendor/daterangepicker/moment.min.js' %}"></script>
+    <script src="{% static 'vendor/daterangepicker/daterangepicker.js' %}"></script>
+    <!--===============================================================================================-->
+    <script src="{% static 'vendor/countdowntime/countdowntime.js' %}"></script>
+    <!--===============================================================================================-->
+    <script src="{% static 'js/main.js' %}"></script>
+
+</body>
+</html>
